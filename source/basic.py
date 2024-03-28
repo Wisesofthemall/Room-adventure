@@ -8,13 +8,13 @@
 import random
 from tkinter import *
 from functools import partial
-from classes import SkullFace, Monster, Room, MonsterRoom
+from classes import SkullFace, Room, MonsterRoom, LockedRoom
 
 # Now you can use the SkullFace class in your "basic.py" file
 
 ###########################################################################################
 # constants
-VERBS = ["go", "look", "take"]  # the supported vocabulary verbs
+VERBS = ["go", "look", "take", "use"]  # the supported vocabulary verbs
 QUIT_COMMANDS = ["exit", "quit", "bye"]  # the supported quit commands
 
 
@@ -28,7 +28,7 @@ class Game(Frame):
     def __init__(self, parent):
         # call the constructor in the Frame superclass
         Frame.__init__(self, parent)
-        self.SkullFace = SkullFace("Skull")
+
 
     # creates the rooms
     def createRooms(self):
@@ -38,20 +38,24 @@ class Game(Frame):
         Game.rooms = []
 
         # first, create the room instances so that they can be referenced below
-        r1 = Room("Room 1", "../assets/image/room1.gif")
-        r2 = Room("Room 2", "../assets/image/room2.gif")
-        r3 = Room("Room 3", "../assets/image/monster.png")
-        r1.addGrabbable('key')
-        r2.addGrabbable('phone')
-        r2.addGrabbable('map')
+        r1 = Room("Room 1", "../assets/image/rooms/room1.gif")
+        r2 = Room("Room 2", "../assets/image/rooms/room2.gif")
+        r3 = MonsterRoom("Room 3", "../assets/image/monsters/monster.png", SkullFace(), "../assets/image/rooms/skullroom.png")
+        r4 = Room("Room 4", "../assets/image/rooms/map.png")
+        r5 = Room("Room 5", "../assets/image/rooms/room2.gif")
+        r6 = Room("Room 6", "../assets/image/rooms/room1.gif")
+        r7 = LockedRoom("../assets/image/rooms/closeDoor.png" ,"Room 7", "east", "golden_key")
+        r8 = Room("Room 8", "../assets/image/rooms/room2.gif")
 
         # room 1
         r1.description = "You look around the room."
         r1.addExit("east", r2)
-        r1.addGrabbable("golden_key")
+        r1.addExit("north", r4)
+
         r1.addItem("chair", "It is made of wicker. No one is sitting on it.")
         r1.addItem("table", "It is made of oak. A golden_key rests on it.")
-        Game.rooms.append(r1)
+        r1.addGrabbable('key')
+
 
         # room 2
         r2.description = "This room smells funny."
@@ -60,22 +64,59 @@ class Game(Frame):
         r2.addExit("south", None)
         r2.addItem("rug", "It appears to be Persian. It also needs to be\nvacuumed.")
         r2.addItem("fireplace", "It is full of ashes and smells dank.")
-        Game.rooms.append(r2)
-        Game.rooms.append(r3)
+        r2.addGrabbable('phone')
+        r2.addGrabbable('map')
+
 
         # set room 1 as the current room at the beginning of the game
 
         # room 3 (Monster room)
         r3.description="Monster!"
-        r3.addGrabbable('phone')
-        r3.addGrabbable('map')
+        r3.addGrabbable("golden_key")
         r3.addExit("west", r2)
+        r3.addExit("east", r5)
 
+
+        #room 4 (Map room)
+        r4.description=""
+        r4.addGrabbable('phone')
+        r4.addGrabbable('map')
+        r4.addExit("south", r1)
+
+        # room 5
+        r5.description=""
+        r5.addGrabbable('phone')
+        r5.addGrabbable('map')
+        r5.addExit("west", r3)
+        r5.addExit("south", r6)
+
+        # room 6
+        r6.description=""
+        r6.addGrabbable('phone')
+        r6.addGrabbable('map')
+        r6.addExit("north", r5)
+        r6.addExit("east", r7) #! change to locked room
+
+        # room 7 (Locked Room)
+        r7.description=""
+        r7.addExit("west", r6)
+        r7.addExit("east", r8) #! change to locked room
+
+        #? Room 8 (DO LATER)
+        r8.addExit("west", r7)
+
+        Game.rooms.append(r1)
+        Game.rooms.append(r2)
+        Game.rooms.append(r3)
+        Game.rooms.append(r4)
+        Game.rooms.append(r5)
+        Game.rooms.append(r6)
+        Game.rooms.append(r7)
+        Game.rooms.append(r8)
         Game.currentRoom = r1
-
         # initialize the player's inventory
-        Game.inventory = []
-        print("DEBUG",r1._grabbables)
+        Game.inventory = set([])
+
         # sets up the GUI
 
     def setupGUI(self):
@@ -101,7 +142,7 @@ class Game(Frame):
         img = None
         Game.image = Label(self, width=WIDTH // 2, image=img)
         Game.image.image = img
-        Game.image.pack(side=LEFT, fill=Y)
+        Game.image.pack(side=LEFT, fill=X)
         Game.image.pack_propagate(False)
 
         # setup the text to the right of the GUI
@@ -120,54 +161,25 @@ class Game(Frame):
         # North and South arrows are also provided to you as well.
         #Adding an arrow pointing to the east.
         canvas = Frame(self, width=WIDTH // 2, height=HEIGHT // 2)
-        Game.eastimage = PhotoImage(file="../assets/image/east.png")
+
+        Game.northimage = PhotoImage(file="../assets/image/directions/north.png")
+        Game.north = Button(canvas, image=Game.northimage, command=partial(self.runCommand, "go north"))
+        Game.north.pack(side=TOP)
+
+        Game.southimage = PhotoImage(file="../assets/image/directions/south.png")
+        Game.south = Button(canvas, image=Game.southimage, command=partial(self.runCommand, "go south"))
+        Game.south.pack(side=BOTTOM)
+
+        Game.eastimage = PhotoImage(file="../assets/image/directions/east.png")
         Game.east = Button(canvas, image=Game.eastimage, command=partial(self.runCommand, "go east"))
         Game.east.pack(side=RIGHT)
         #Adding an arrow pointing to the west.
-        Game.westimage = PhotoImage(file="../assets/image/west.png")
+        Game.westimage = PhotoImage(file="../assets/image/directions/west.png")
         Game.west = Button(canvas, image=Game.westimage, command=partial(self.runCommand, "go west"))
         Game.west.pack(side=LEFT)
 
         canvas.pack(side=TOP, fill=Y)
         canvas.pack_propagate(False)
-    #! Complete the monster fight Function
-    def monsterFight(self, action=""):
-        # enable the text widget, clear it, set it, and disable it
-        Game.text.config(state=NORMAL)
-        Game.text.delete("1.0", END)
-
-
-        Game.text.insert(END, "You have enter a BOSS FIGHT PREPPARE \n")
-
-        Game.text.config(state=DISABLED)
-
-        if not action.isdigit():
-            Game.text.insert(END, "THATS NOT A NUMBERRR")
-        # exit the game if the player wants to leave (supports quit, exit, and bye)
-        if (action in QUIT_COMMANDS):
-            exit(0)
-
-        # if the current room is None, then the player is dead
-        # this only happens if the player goes south when in room 4
-        if (Game.currentRoom == None):
-            # clear the player's input
-            Game.player_input.delete(0, END)
-            return
-
-        # set a default response
-        response = "I don't understand. Try verb noun. Valid verbs\nare {}.".format(", ".join(VERBS))
-        # split the user input into words (words are separated by spaces) and store the words in a list
-
-
-        print('THE NUMBER', action)
-        # we need a valid verb
-
-
-        # display the response on the right of the GUI
-        # display the room's image on the left of the GUI
-        # clear the player's input
-        self.setRoomImage()
-
 
     # set the current room image on the left of the GUI
     def setRoomImage(self):
@@ -187,22 +199,34 @@ class Game(Frame):
         # enable the text widget, clear it, set it, and disable it
         Game.text.config(state=NORMAL)
         Game.text.delete("1.0", END)
-        ##!
 
-        if (Game.currentRoom._description == "Monster!"):
-            self.monsterFight()
+        if (isinstance(Game.currentRoom, MonsterRoom) and Game.currentRoom._monster._solved == False ):
+            Game.text.config(state=NORMAL)
+            Game.text.delete("1.0", END)
+            Game.text.insert(END, "You have enter a BOSS FIGHT PREPPARE \n")
+            Game.text.insert(END, "You CANNOT leave this room until the BOSS is defeated \n")
+            Game.text.insert(END, Game.currentRoom._monster._instruction)
+            Game.text.config(state=DISABLED)
+
+        if (isinstance(Game.currentRoom, LockedRoom) and Game.currentRoom._locked == True ):
+            Game.text.config(state=NORMAL)
+            Game.text.delete("1.0", END)
+            Game.text.insert(END, "Dang this room is locked \n")
+            Game.text.insert(END, f"this door requires a {Game.currentRoom._key} to open the door \n")
+
+
         if (Game.currentRoom == None):
             # if dead, let the player know
             Game.text.insert(END, "You are dead. The only thing you can do now\nis quit.\n")
         else:
             # otherwise, display the appropriate status
-            Game.text.insert(END, "{}\n\n{}\nYou are carrying: {}\n\n".format(status, Game.currentRoom, Game.inventory))
+            Game.text.insert(END, "{}\n\n{}\nYou are carrying: {}\n\n".format(status, Game.currentRoom, list(Game.inventory)))
         Game.text.config(state=DISABLED)
 
         # support for tab completion
         # add the words to support
         if (Game.currentRoom != None):
-            Game.words = VERBS + QUIT_COMMANDS + Game.inventory + Game.currentRoom.exits + Game.currentRoom.items + list(Game.currentRoom.grabbables)
+            Game.words = VERBS + QUIT_COMMANDS + list(Game.inventory) + Game.currentRoom.exits + Game.currentRoom.items + list(Game.currentRoom.grabbables)
 
     # play the game
     def play(self):
@@ -231,21 +255,66 @@ class Game(Frame):
         if (action in QUIT_COMMANDS):
             exit(0)
 
-        if (Game.currentRoom._description =="Monster!"):
-            print('THE ACTION', action )
+        if (isinstance(Game.currentRoom, MonsterRoom) and Game.currentRoom._monster._solved == False):
             Game.text.config(state=NORMAL)
             Game.text.delete("1.0", END)
+            Game.text.insert(END, "You have enter a BOSS FIGHT PREPPARE \n")
+            Game.text.insert(END, "You CANNOT leave this room until the BOSS is defeated \n")
+            Game.text.insert(END, Game.currentRoom._monster._instruction + "\n")
             Game.text.insert(END, action + "\n")
-            Game.text.insert(END, self.SkullFace.guess(int(action)))
-            if(self.SkullFace._solved == True):
-                print('YOU WONNN')
+            Game.text.insert(END, Game.currentRoom._monster.guess(int(action)))
+
+            if(Game.currentRoom._monster._solved == True):
                 Game.currentRoom._description = ""
 
-                Game.currentRoom.image = "../assets/image/room1.gif"
-                self.setStatus("YOU DEFEATED SKULL FACE, GRAB THE LOOT")
+                Game.currentRoom.image = Game.currentRoom.roomImage
+                self.setStatus(f"YOU DEFEATED {Game.currentRoom._monster.name}, GRAB THE LOOT")
 
             self.setRoomImage()
             return
+        if (isinstance(Game.currentRoom, LockedRoom) and Game.currentRoom._locked == True):
+            words = action.split()
+
+            # the game only understands two word inputs
+            if (len(words) == 2):
+                # isolate the verb and noun
+                verb = words[0].strip()
+                noun = words[1].strip()
+
+                # we need a valid verb
+                if (verb in VERBS):
+                    # the verb is: go
+                    if (verb == "go"):
+                        # set a default response
+                        response = "You can't go in that direction."
+
+                        # check if the noun is a valid exit
+                        if (noun in Game.currentRoom.exits and noun != Game.currentRoom._direction):
+                            # get its index
+                            i = Game.currentRoom.exits.index(noun)
+                            # change the current room to the one that is associated with the specified exit
+                            Game.currentRoom = Game.currentRoom.exitLocations[i]
+                            # set the response (success)
+                            response = "You walk {} and enter another room.".format(noun)
+                    # the verb is: use
+
+                    elif (verb == "use"):
+                        # set a default response
+                        response = "You cant use  that item."
+
+                        if( noun in Game.inventory and noun == Game.currentRoom._key):
+                            Game.inventory.remove(noun)
+                            Game.currentRoom._locked = False
+                            Game.currentRoom.direction = ""
+                            Game.currentRoom.image = Game.currentRoom._roomImage
+                            response ="YES it WORKS"
+
+                        self.setStatus(response)
+            self.setRoomImage()
+            return
+
+
+
         # if the current room is None, then the player is dead
         # this only happens if the player goes south when in room 4
         if (Game.currentRoom == None):
@@ -301,7 +370,7 @@ class Game(Frame):
 
                         # add the grabbable item to the player's inventory
 
-                        Game.inventory.append(noun)
+                        Game.inventory.add(noun)
                         # set the response (success)
                         Game.currentRoom.removeGrabbable(noun)
                         response = "You take {}.".format(noun)

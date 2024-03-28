@@ -10,7 +10,6 @@ class Monster:
         self._difficulty = 1
         self._strikes = 3
         self._loot = []
-        self._solved = False
 
     @property
     def name(self):
@@ -48,16 +47,9 @@ class Monster:
     def loot(self):
         return self._loot
 
-    @property
-    def solved(self):
-        return self._solved
-
-    @solved.setter
-    def solved(self, value):
-        self._solved = value
 
     @loot.setter
-    def name(self, value):
+    def loot(self, value):
         self._loot = value
 
     def increaseDifficulty(self):
@@ -70,20 +62,32 @@ class Monster:
         self._strikes -=1
 
 class SkullFace(Monster):
-    def __init__(self, name):
+    def __init__(self):
 
         self._name = "Skull Face"
-        self._loot = ['Skull', "Grass"]
         self._target_number = random.randint(1, 10)
-        self._difficulty = 1
-        self._strikes = 3
-        self._loot = []
         self._solved = False
+        self._instruction = "You must guess a number 1 - 10 in order to defeat me !!!"
 
+
+    @property
+    def solved(self):
+        return self._solved
+
+    @property
+    def name(self):
+      return self._name
+
+    @name.setter
+    def name(self, value):
+      self._name = value
+
+    @solved.setter
+    def solved(self, value):
+        self._solved = value
 
     def guess(self, number):
-        if self._strikes == 0:
-            return "You've failed please enter "
+
         if number < self._target_number:
 
             return "Higher"
@@ -237,9 +241,12 @@ class Room:
         return s
 
 class MonsterRoom(Room):
-    def __init__(self,  name, image, monster = None):
+    def __init__(self,  name, image, monster = None, roomImage =""):
         super().__init__(name, image)
         self._monster = monster
+        self._solved = False
+        self._roomImage = roomImage
+
     @property
     def monster(self):
         return self._monster
@@ -247,3 +254,54 @@ class MonsterRoom(Room):
     @monster.setter
     def monster(self, value):
         self._monster = value
+
+    @property
+    def roomImage(self):
+      return self._roomImage
+
+    @roomImage.setter
+    def roomImage(self, value):
+      self.roomImage = value
+
+
+
+class LockedRoom(Room):
+    def __init__(self,  image,name, direction, key):
+        super().__init__(name,image)
+        self._locked = True
+        self._direction = direction
+        self._key = key
+        self._image = "../assets/image/rooms/closeDoor.png"
+        self._roomImage = "../assets/image/rooms/openDoor.png"
+
+    @property
+    def roomImage(self):
+        return self._roomImage
+
+    @roomImage.setter
+    def roomImage(self, value):
+        self._roomImage = value
+
+    @property
+    def openImage(self):
+      return self._openImage
+
+    @openImage.setter
+    def openImage(self, value):
+      self.openImage = value
+
+    @property
+    def direction(self):
+        return self._direction
+
+    @direction.setter
+    def direction(self, value):
+        self._direction = value
+
+    @property
+    def key(self):
+        return self._key
+
+    @key.setter
+    def key(self, value):
+        self._key = value

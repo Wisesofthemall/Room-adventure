@@ -61,7 +61,6 @@ class Game(Frame):
         r2.description = "This room smells funny."
         r2.addExit("west", r1)
         r2.addExit("east", r3)
-        r2.addExit("south", None)
         r2.addItem("rug", "It appears to be Persian. It also needs to be\nvacuumed.")
         r2.addItem("fireplace", "It is full of ashes and smells dank.")
         r2.addGrabbable('phone')
@@ -309,8 +308,8 @@ class Game(Frame):
                             Game.currentRoom.image = Game.currentRoom._roomImage
                             response ="YES it WORKS"
 
-                        self.setStatus(response)
-            self.setRoomImage()
+                    self.setStatus(response)
+                    self.setRoomImage()
             return
 
 

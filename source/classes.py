@@ -103,7 +103,7 @@ class SkullFace(Monster):
 # the blueprint for a room
 class Room:
     # the constructor
-    def __init__(self, name, image):
+    def __init__(self, name, image ="../assets/image/rooms/map.png"):
         # rooms have a name, image, description, exits (e.g., south), exit locations (e.g., to the
         # south is room n), items (e.g., table), item descriptions (for each item), and grabbables
         # (things that can be taken into inventory)
@@ -266,8 +266,9 @@ class MonsterRoom(Room):
 
 
 class LockedRoom(Room):
-    def __init__(self,  image,name, direction, key):
-        super().__init__(name,image)
+    def __init__(self, name,image ,direction, key):
+        super().__init__(name, image)
+
         self._locked = True
         self._direction = direction
         self._key = key

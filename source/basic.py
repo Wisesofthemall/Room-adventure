@@ -38,14 +38,14 @@ class Game(Frame):
         Game.rooms = []
 
         # first, create the room instances so that they can be referenced below
-        r1 = Room("Room 1", "../assets/image/rooms/room1.gif")
-        r2 = Room("Room 2", "../assets/image/rooms/room2.gif")
+        r1 = Room("Room 1")
+        r2 = Room("Room 2")
         r3 = MonsterRoom("Room 3", "../assets/image/monsters/monster.png", SkullFace(), "../assets/image/rooms/skullroom.png")
-        r4 = Room("Room 4", "../assets/image/rooms/map.png")
-        r5 = Room("Room 5", "../assets/image/rooms/room2.gif")
-        r6 = Room("Room 6", "../assets/image/rooms/room1.gif")
-        r7 = LockedRoom("../assets/image/rooms/closeDoor.png" ,"Room 7", "east", "golden_key")
-        r8 = Room("Room 8", "../assets/image/rooms/room2.gif")
+        r4 = Room("Room 4")
+        r5 = Room("Room 5")
+        r6 = Room("Room 6")
+        r7 = LockedRoom("Room 7","../assets/image/rooms/closeDoor.png" , "east", "golden_key")
+        r8 = Room("Room 8")
 
         # room 1
         r1.description = "You look around the room."

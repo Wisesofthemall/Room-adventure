@@ -1,6 +1,6 @@
 
 import random
-
+from riddles import riddles
 
 class Monster:
 
@@ -63,7 +63,7 @@ class Monster:
 
 class SkullFace(Monster):
     def __init__(self):
-
+        self._strikes = 3
         self._name = "Skull Face"
         self._target_number = random.randint(1, 10)
         self._solved = False
@@ -97,6 +97,122 @@ class SkullFace(Monster):
             self._solved = True
             return "Correct"
 
+class Kong(Monster):
+    def __init__(self):
+        self._strikes = 3
+        self._name = "Kong"
+        self._num1 = random.randint(1, 10)
+        self._num2 = random.randint(1,10)
+        self._target_number = self._num1 * self._num2
+        self._solved = False
+        self._instruction = f"Answer this math prolem !!! what is {self._num1} x {self._num2} =  "
+
+
+    @property
+    def solved(self):
+        return self._solved
+
+    @property
+    def name(self):
+      return self._name
+
+    @name.setter
+    def name(self, value):
+      self._name = value
+
+    @solved.setter
+    def solved(self, value):
+        self._solved = value
+
+    def guess(self, number):
+
+        if number != self._target_number:
+            return "WRONG"
+        else:
+            self._solved = True
+            return "Correct"
+
+class Teddy(Monster):
+    def __init__(self):
+
+        self._name = "Teddy"
+        self._target_number = random.randint(1, 100)
+        self._strikes = 10
+        self._solved = False
+        self._instruction = "You must guess a number 1 - 100 in order to defeat me or YOURE DEAD!!!"
+
+
+    @property
+    def solved(self):
+        return self._solved
+
+    @property
+    def name(self):
+      return self._name
+
+    @name.setter
+    def name(self, value):
+      self._name = value
+
+    @solved.setter
+    def solved(self, value):
+        self._solved = value
+
+    @property
+    def strikes(self):
+      return self._strikes
+
+    @strikes.setter
+    def strikes(self,value):
+      self._strikes = value
+
+
+    def guess(self, number):
+
+        if number < self._target_number:
+            self._strikes -= 1
+            return f"Higher, you now have {self._strikes} left"
+        elif number > self._target_number:
+            self._strikes -= 1
+            return f"Lower, you now have {self._strikes} left"
+        else:
+            self._solved = True
+            return "Correct"
+class Riddler(Monster):
+    def __init__(self):
+        self._strikes = 3
+        self._name = "Riddler"
+        self._num1 = random.randint(0, 4)
+        self._question = riddles[self._num1]["question"]
+        self._answer = riddles[self._num1]["answer"]
+
+        self._solved = False
+        self._instruction = f"Riddle me this \n {self._question} "
+
+
+    @property
+    def solved(self):
+        return self._solved
+
+    @property
+    def name(self):
+      return self._name
+
+    @name.setter
+    def name(self, value):
+      self._name = value
+
+    @solved.setter
+    def solved(self, value):
+        self._solved = value
+
+    def guess(self, string):
+
+        if string != self._answer:
+            return "WRONG"
+        else:
+            self._solved = True
+            return "Correct"
 
 
 ###########################################################################################
@@ -226,6 +342,8 @@ class Room:
         s += "You see: "
         for item in self._items:
             s += item + " "
+        for item in self._grabbables:
+            s += item + " "
         s += "\n"
 
         s += "You can take: "
@@ -239,6 +357,10 @@ class Room:
             s += exit + " "
 
         return s
+
+class ExitRoom(Room):
+    def __init__(self, name, image):
+      super().__init__(name, image)
 
 class MonsterRoom(Room):
     def __init__(self,  name, image, monster = None, roomImage =""):

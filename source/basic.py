@@ -8,7 +8,7 @@
 import random
 from tkinter import *
 from functools import partial
-from classes import SkullFace, Room, MonsterRoom, LockedRoom
+from classes import SkullFace, Room, MonsterRoom, LockedRoom, Kong, Riddler, Teddy, ExitRoom
 
 # Now you can use the SkullFace class in your "basic.py" file
 
@@ -40,13 +40,31 @@ class Game(Frame):
         # first, create the room instances so that they can be referenced below
         r1 = Room("Room 1")
         r2 = Room("Room 2")
-        r3 = MonsterRoom("Room 3", "../assets/image/monsters/monster.png", SkullFace(), "../assets/image/rooms/skullroom.png")
+        r3 = MonsterRoom("Room 3", "../assets/image/monsters/skullface.png", SkullFace(), "../assets/image/rooms/skullroom.png")
         r4 = Room("Room 4")
         r5 = Room("Room 5")
         r6 = Room("Room 6")
         r7 = LockedRoom("Room 7","../assets/image/rooms/closeDoor.png" , "east", "golden_key")
         r8 = Room("Room 8")
+        r9 = Room("Room 9")
+        r10 = Room("Room 10")
+        r11 = MonsterRoom("Room 11","../assets/image/monsters/kong.png", Kong(), "../assets/image/rooms/skullroom.png")
+        r12 = Room("Room 12")
+        r13 = Room("Room 13")
+        r14 = MonsterRoom("Room 14","../assets/image/monsters/riddler.png",Riddler(), "../assets/image/rooms/skullroom.png")
+        r15 = LockedRoom("Room 15","../assets/image/rooms/closeDoor.png" , "west", "kong_hair")
+        r16 = Room("Room 16")
+        r17 = MonsterRoom("Room 17","../assets/image/monsters/riddler.png",Riddler(), "../assets/image/rooms/skullroom.png")
+        r18 = Room("Room 18")
+        r19 = Room("Room 19")
+        r21 = Room("Room 21")
+        r20 = MonsterRoom("Room 20","../assets/image/monsters/kong.png", Kong(), "../assets/image/rooms/skullroom.png")
+        r26 = MonsterRoom("Room 17","../assets/image/monsters/teddy.png",Teddy(), "../assets/image/rooms/skullroom.png")
+        r22 = ExitRoom("Room 25","../assets/image/rooms/exit.png" )
+        r25 = ExitRoom("Room 25","../assets/image/rooms/exit.png" )
 
+        r23 =Room("Room 13")
+        r24 = Room("Room 24")
         # room 1
         r1.description = "You look around the room."
         r1.addExit("east", r2)
@@ -101,8 +119,85 @@ class Game(Frame):
         r7.addExit("west", r6)
         r7.addExit("east", r8) #! change to locked room
 
-        #? Room 8 (DO LATER)
+        # Room 8
         r8.addExit("west", r7)
+        r8.addExit("east", r9)
+
+        # Room 9
+        r9.addExit("west", r8)
+        r9.addExit("south", r10)
+
+        # room 10
+        r10.addExit("north", r9)
+        r10.addExit("south",r11)
+
+        # Room 11 (Monster Room)
+        r11.addExit("north", r10)
+        r11.addExit("south", r12)
+        r11.addGrabbable("kong_hair")
+
+        # Room 12
+        r12.addExit("north", r11)
+        r12.addExit("south",r13)
+
+        # Room 13
+        r13.addExit("north", r12)
+        r13.addExit("west", r15)
+        r13.addExit("east", r14)
+
+        # Room 14 (Monster Room)
+        r14.addExit("west", r13)
+        r14.addGrabbable("golden_sword")
+
+        # Room 15 Locked Door
+        r15.addExit("east", r13)
+        r15.addExit("west", r16)
+
+        # Room 16
+        r16.addExit("north", r17)
+        r16.addExit("east",r15)
+        r16.addExit("south", r26)
+
+        # Room 26
+        r26.addExit("west", r23)
+        r26.addExit("north", r16)
+
+        #Room 17
+        r17.addExit("south", r16)
+        r17.addExit("west", r18)
+
+
+        # Room 18
+        r18.addExit("east", r17)
+        r18.addExit("west", r19)
+
+
+        # Room 19
+        r19.addExit("west", r20)
+        r19.addExit("east",r18)
+
+        # Room 20 (Moonster Room)
+        r20.addExit("west", r21)
+        r20.addExit("east",r19)
+
+
+        # Room 21
+        r21.addExit("east", r20)
+        r21.addExit("west", r22)
+
+
+        # Room 25 (Exit room)
+        r25.addExit("east", r24)
+
+        # Room 22 (Exit room)
+        r22.addExit("east", r21)
+        # Room 23
+        r23.addExit("west", r24)
+        r23.addExit("east", r22)
+
+        # Room 24
+        r24.addExit("west", r25)
+        r24.addExit("east", r23)
 
         Game.rooms.append(r1)
         Game.rooms.append(r2)
@@ -112,7 +207,27 @@ class Game(Frame):
         Game.rooms.append(r6)
         Game.rooms.append(r7)
         Game.rooms.append(r8)
-        Game.currentRoom = r1
+        Game.rooms.append(r9)
+        Game.rooms.append(r10)
+        Game.rooms.append(r11)
+        Game.rooms.append(r12)
+        Game.rooms.append(r13)
+        Game.rooms.append(r14)
+        Game.rooms.append(r15)
+        Game.rooms.append(r16)
+        Game.rooms.append(r17)
+        Game.rooms.append(r18)
+        Game.rooms.append(r19)
+        Game.rooms.append(r20)
+        Game.rooms.append(r21)
+        Game.rooms.append(r22)
+        Game.rooms.append(r23)
+        Game.rooms.append(r24)
+        Game.rooms.append(r25)
+        Game.rooms.append(r26)
+
+        Game.currentRoom = r18
+
         # initialize the player's inventory
         Game.inventory = set([])
 
@@ -213,6 +328,12 @@ class Game(Frame):
             Game.text.insert(END, "Dang this room is locked \n")
             Game.text.insert(END, f"this door requires a {Game.currentRoom._key} to open the door \n")
 
+        if (isinstance(Game.currentRoom, ExitRoom) ):
+            Game.text.config(state=NORMAL)
+            Game.text.delete("1.0", END)
+            Game.text.insert(END, "You have EXIT THE MAZE congratulationscongratulations 🎉 \n")
+            Game.text.insert(END, "Quit the game to restart \n")
+
 
         if (Game.currentRoom == None):
             # if dead, let the player know
@@ -220,13 +341,13 @@ class Game(Frame):
         else:
             # otherwise, display the appropriate status
             Game.text.insert(END, "{}\n\n{}\nYou are carrying: {}\n\n".format(status, Game.currentRoom, list(Game.inventory)))
-        Game.text.config(state=DISABLED)
+
 
         # support for tab completion
         # add the words to support
         if (Game.currentRoom != None):
             Game.words = VERBS + QUIT_COMMANDS + list(Game.inventory) + Game.currentRoom.exits + Game.currentRoom.items + list(Game.currentRoom.grabbables)
-
+        Game.text.config(state=DISABLED)
     # play the game
     def play(self):
         # create the room instances
@@ -261,8 +382,13 @@ class Game(Frame):
             Game.text.insert(END, "You CANNOT leave this room until the BOSS is defeated \n")
             Game.text.insert(END, Game.currentRoom._monster._instruction + "\n")
             Game.text.insert(END, action + "\n")
-            Game.text.insert(END, Game.currentRoom._monster.guess(int(action)))
+            if action.isdigit():
+                Game.text.insert(END, Game.currentRoom._monster.guess(int(action)))
+            else:
+                Game.text.insert(END, Game.currentRoom._monster.guess(action))
 
+            if Game.currentRoom._monster._strikes == 0:
+                Game.currentRoom = None
             if(Game.currentRoom._monster._solved == True):
                 Game.currentRoom._description = ""
 

@@ -226,7 +226,7 @@ class Game(Frame):
         Game.rooms.append(r25)
         Game.rooms.append(r26)
 
-        Game.currentRoom = r18
+        Game.currentRoom = r16
 
         # initialize the player's inventory
         Game.inventory = set([])
@@ -389,6 +389,7 @@ class Game(Frame):
 
             if Game.currentRoom._monster._strikes == 0:
                 Game.currentRoom = None
+                self.setStatus(f"YOU DIED ")
             if(Game.currentRoom._monster._solved == True):
                 Game.currentRoom._description = ""
 

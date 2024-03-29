@@ -59,8 +59,8 @@ class Game(Frame):
         r19 = Room("Room 19")
         r21 = Room("Room 21")
         r20 = MonsterRoom("Room 20","../assets/image/monsters/kong.png", Kong(), "../assets/image/rooms/skullroom.png")
-        r26 = MonsterRoom("Room 17","../assets/image/monsters/teddy.png",Teddy(), "../assets/image/rooms/skullroom.png")
-        r22 = ExitRoom("Room 25","../assets/image/rooms/exit.png" )
+        r26 = MonsterRoom("Room 26","../assets/image/monsters/teddy.png",Teddy(), "../assets/image/rooms/skullroom.png")
+        r22 = ExitRoom("Room 22","../assets/image/rooms/exit.png" )
         r25 = ExitRoom("Room 25","../assets/image/rooms/exit.png" )
 
         r23 =Room("Room 23")
@@ -331,7 +331,7 @@ class Game(Frame):
         if (isinstance(Game.currentRoom, ExitRoom) ):
             Game.text.config(state=NORMAL)
             Game.text.delete("1.0", END)
-            Game.text.insert(END, "You have EXIT THE MAZE congratulationscongratulations 🎉 \n")
+            Game.text.insert(END, "You have EXIT THE MAZE congratulations 🎉 \n")
             Game.text.insert(END, "Quit the game to restart \n")
 
 

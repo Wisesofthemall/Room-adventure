@@ -63,7 +63,7 @@ class Game(Frame):
         r22 = ExitRoom("Room 25","../assets/image/rooms/exit.png" )
         r25 = ExitRoom("Room 25","../assets/image/rooms/exit.png" )
 
-        r23 =Room("Room 13")
+        r23 =Room("Room 23")
         r24 = Room("Room 24")
         # room 1
         r1.description = "You look around the room."
@@ -193,7 +193,7 @@ class Game(Frame):
         r22.addExit("east", r21)
         # Room 23
         r23.addExit("west", r24)
-        r23.addExit("east", r22)
+        r23.addExit("east", r26)
 
         # Room 24
         r24.addExit("west", r25)
@@ -226,7 +226,7 @@ class Game(Frame):
         Game.rooms.append(r25)
         Game.rooms.append(r26)
 
-        Game.currentRoom = r16
+        Game.currentRoom = r1
 
         # initialize the player's inventory
         Game.inventory = set([])

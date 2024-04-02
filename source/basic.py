@@ -314,6 +314,7 @@ class Game(Frame):
         Game.text.config(state=NORMAL)
         Game.text.delete("1.0", END)
 
+        # If the room the player has enter is a Monster Room and the monster hasnt been defeated , print this
         if (isinstance(Game.currentRoom, MonsterRoom) and Game.currentRoom._monster._solved == False ):
             Game.text.config(state=NORMAL)
             Game.text.delete("1.0", END)
@@ -322,12 +323,14 @@ class Game(Frame):
             Game.text.insert(END, Game.currentRoom._monster._instruction)
             Game.text.config(state=DISABLED)
 
+        # If the room the player has enter has a Locked Door and its locked, print this
         if (isinstance(Game.currentRoom, LockedRoom) and Game.currentRoom._locked == True ):
             Game.text.config(state=NORMAL)
             Game.text.delete("1.0", END)
             Game.text.insert(END, "Dang this room is locked \n")
             Game.text.insert(END, f"this door requires a {Game.currentRoom._key} to open the door \n")
 
+        # If the player has reach the exit, then print this
         if (isinstance(Game.currentRoom, ExitRoom) ):
             Game.text.config(state=NORMAL)
             Game.text.delete("1.0", END)
@@ -374,7 +377,7 @@ class Game(Frame):
         # exit the game if the player wants to leave (supports quit, exit, and bye)
         if (action in QUIT_COMMANDS):
             exit(0)
-
+        # while the player is in the monster room, they have to type an answer and the monster will repond
         if (isinstance(Game.currentRoom, MonsterRoom) and Game.currentRoom._monster._solved == False):
             Game.text.config(state=NORMAL)
             Game.text.delete("1.0", END)
@@ -386,10 +389,11 @@ class Game(Frame):
                 Game.text.insert(END, Game.currentRoom._monster.guess(int(action)))
             else:
                 Game.text.insert(END, Game.currentRoom._monster.guess(action))
-
+            # If you ran out of strikes, you die
             if Game.currentRoom._monster._strikes == 0:
                 Game.currentRoom = None
                 self.setStatus(f"YOU DIED ")
+            # If the player solve the monster puzzle
             if(Game.currentRoom._monster._solved == True):
                 Game.currentRoom._description = ""
 
@@ -398,6 +402,8 @@ class Game(Frame):
 
             self.setRoomImage()
             return
+
+        # If the player is in the Locked Room, then they have to use a specific item inorder to unlock it
         if (isinstance(Game.currentRoom, LockedRoom) and Game.currentRoom._locked == True):
             words = action.split()
 
